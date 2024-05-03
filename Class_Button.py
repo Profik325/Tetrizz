@@ -14,8 +14,8 @@ class Button(pygame.sprite.Sprite):
         self.add(group)
         self.x = x
         self.y = y
-        self.width = width
-        self.height = height
+        self.width = self.x + width
+        self.height = self.y + height
         self.Sprites = button_sprites  # ['normal.png', 'hovered.png', 'pressed.png']
         self.image = pygame.image.load(self.Sprites[0])
         self.image = pygame.transform.scale(self.image, (self.width, self.height))
