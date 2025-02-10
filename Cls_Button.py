@@ -1,9 +1,8 @@
 import pygame
 
-button_clicked_sound = 'Button_clicked.mp3'
+
 pygame.init()
 pygame.mixer.init()
-pygame.mixer.music.load(button_clicked_sound)
 
 objects = []
 

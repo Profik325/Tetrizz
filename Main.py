@@ -227,7 +227,7 @@ while Running:
                     text = little_font.render(str(beta), False, (160, 160, 160))
                     Screen.blit(text, (475, 400 + 30 * (number_number + 1) + 10))
                     number_number += 1
-                    if number_number == 3:
+                    if number_number == 4:
                         break
 
     pygame.display.flip()

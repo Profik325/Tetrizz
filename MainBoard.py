@@ -90,6 +90,7 @@ class Board:
                                                         1 * 10 * self.cell_size + 1, 1 * 16 * self.cell_size + 2),
                                  width=2)
         pygame.draw.rect(self.Screen, 'black', (410, 375, 170, 199), width=2)
+        self.Screen.blit(pygame.image.load('SCORE_97x55.png'), (445, 310))
 
     def render_cells(self):
         Y = 0
