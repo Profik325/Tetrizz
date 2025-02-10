@@ -39,7 +39,7 @@ class Board:
                             Path('figure_3-green_ss.png'), Path('figure_4-cyan_ss.png'),
                             Path('figure_5-blue_ss.png'), Path('figure_6-orange_ss.png'),
                             Path('figure_7-purple_ss.png')]
-        self.figures = [1, 2, 3, 4, 5, 6, 7]
+        self.figures = [1, 2, 3, 4, 5, 6, 7] # 7th figure is broken and i couldn't solve the bug spendding hours and hour
         self.current_figure_ss = None
         self.Screen = screen
         self.figure_rotation = 1  # may be 1 or 2 or 3 or 4
@@ -274,13 +274,13 @@ class Board:
                             self.fill_cells(row, col + 2, self.figure_6_tile)
                             return True
                     case 3:
-                        if self.board[row - 2][col + 1][0] == 0 and self.board[row - 1][col + 1][0] == 0 \
-                                and self.board[row][col + 1][0] == 0 and \
-                                self.board[row][col][0] == 0 and row - 2 > -1:
-                            self.fill_cells(row - 2, col + 1, self.figure_6_tile)
-                            self.fill_cells(row - 1, col + 1, self.figure_6_tile)
-                            self.fill_cells(row, col + 1, self.figure_6_tile)
+                        if self.board[row - 2][col][0] == 0 and self.board[row - 1][col][0] == 0 \
+                                and self.board[row][col][0] == 0 and \
+                                self.board[row][col + 1][0] == 0 and row - 2 > -1:
+                            self.fill_cells(row - 2, col, self.figure_6_tile)
+                            self.fill_cells(row - 1, col, self.figure_6_tile)
                             self.fill_cells(row, col, self.figure_6_tile)
+                            self.fill_cells(row, col + 1, self.figure_6_tile)
                             return True
                     case 4:
                         if self.board[row - 1][col][0] == 0 and self.board[row - 1][col + 1][0] == 0 \
@@ -336,7 +336,7 @@ class Board:
         row = 15
         while True:
             if self.cells_check_n_reg(self.current_figure, row, self.col_selected):
-                self.current_figure = 4
+                self.current_figure = self.alpha()
                 self.current_figure_ss = self.get_spritesheet(self.current_figure)
                 return True
             row -= 1

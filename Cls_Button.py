@@ -1,10 +1,9 @@
 import pygame
 
-
+button_clicked_sound = 'Button_clicked.mp3'
 pygame.init()
-Main_Font = pygame.font.Font(None, 36)  # Шрифт
-Main_Font_Color = (0, 0, 0)  # Цвет шрифта
-
+pygame.mixer.init()
+pygame.mixer.music.load(button_clicked_sound)
 
 objects = []
 
@@ -36,6 +35,7 @@ class Button(pygame.sprite.Sprite):
         if self.sprite_rect.collidepoint(mousePos):
             self.current_sprite = self.hovered
             if pygame.mouse.get_pressed(num_buttons=3)[0] == 1:
+                pygame.mixer.music.play()
                 self.current_sprite = self.clicked
                 if self.onclickFunction is not None:
                     self.onclickFunction()

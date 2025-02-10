@@ -1,15 +1,16 @@
 import os
 from pathlib import Path
 
+from pycparser.c_ast import Return
 from pygame import USEREVENT
 
 from Spritesheet import Spritesheet
 
-os.environ['SDL_VIDEO_CENTERED'] = '0'
+os.environ['SDL_VIDEO_CENTERED'] = '0'  # смещение окна по центру крана / центрирование
 
 from Cls_Button import Button
 import pygame
-import random
+from random import randint, choice
 from MainBoard import Board
 
 pygame.init()
@@ -18,16 +19,15 @@ pygame.font.init()
 font = pygame.font.Font('PixelizerBold.ttf', 55)
 little_font = pygame.font.Font('PixelizerBold.ttf', 30)
 
-Screen_Width = 400 * 3   # Constant
-Screen_Height = 200 * 3  # Constant
+Screen_Width = 400 * 3   # Not constant
+Screen_Height = 200 * 3  # Not constant
 
 Screen = pygame.display.set_mode((Screen_Width, Screen_Height), vsync=1)
-# Screen.fill((130, 130, 130))
 
 # Инициализация переменных \/
 Running = True
 K = 4
-n = random.randint(1, 100)
+n = randint(1, 100)
 Started = False
 frame_number = 0
 frame = 0
@@ -41,11 +41,19 @@ Button_sprites_Return = ['Button_Gray_Standart_RETURN(tetris style)_96x48.png', 
 Buttons = pygame.sprite.Group() 
 Buttons_2nd_screen = pygame.sprite.Group()
 
+Lobby_music = ['A-lobbymusic.mp3', 'B-lobbymusic.mp3',
+                'C-lobbymusic.mp3']
+pygame.mixer.music.load(choice(Lobby_music))
+pygame.mixer.music.play()
+
 # Инициализация переменных закончена
 
 # Инициализация функций
 
 def Start_BtnFunc():
+    pygame.mixer.music.stop()
+    pygame.mixer.music.load('Button_clicked.mp3')
+    pygame.mixer.music.play()
     global Started
     Started = True
     global Screen_Width, Screen_Height
@@ -54,11 +62,18 @@ def Start_BtnFunc():
     pygame.display.set_mode((Screen_Width, Screen_Height))
     board.start()
 
+
 def Exit_BtnFunc():
+    pygame.mixer.music.stop()
+    pygame.mixer.music.load('Button_clicked.mp3')
+    pygame.mixer.music.play()
     global Running
     Running = False
 
 def Return_BtnFunc():
+    pygame.mixer.music.stop()
+    pygame.mixer.music.load('Button_clicked.mp3')
+    pygame.mixer.music.play()
     global Started
     Started = False
     global Screen_Width, Screen_Height
@@ -72,9 +87,9 @@ def Return_BtnFunc():
 
 
 if n == 1:
-    pygame.display.set_caption('Yarik leniviy')
-else:
     pygame.display.set_caption('Tetrizz')
+else:
+    pygame.display.set_caption('Tetris')
 
 pygame.display.flip()  # Screen update
 
@@ -92,36 +107,25 @@ Btn_Exit = Button(Screen_Width / 2 - 110, Screen_Height / 2 + 24 * K * 2, 240, 4
 
 Btn_Return = Button(15, 730, Button_sprites_Return, 'Return', onclickFunction=Return_BtnFunc)
 
-# pygame.draw.rect(Screen, Btn_Start.Sprites[1], (Btn_Start.x, Btn_Start.y, Btn_Start.width, Btn_Start.height))  # Button colors: 'normal', 'hover', 'pressed'
-# Screen.blit(Btn_Start.Text, (Btn_Start.x + 110, Btn_Start.y + 5.6 * 2.6))  # X is a random number that matches with the button's scale, Y is {Button.y + <0.1 * Button.width> * 2.6}
-
-# Buttons.draw(Screen)
-
-# pygame.draw.rect(Screen, Btn_Exit.Sprites[1], (Btn_Exit.x, Btn_Exit.y, Btn_Exit.width, Btn_Exit.height))
-# Screen.blit(Btn_Exit.Text, (Btn_Exit.x + 95, Btn_Exit.y + 4.8 * 2.6))
-
 Buttons.add(Btn_Start)
 Buttons.add(Btn_Exit)
 Buttons_2nd_screen.add(Btn_Return)
 
 pygame.display.flip()  # Screen update
 
-# fig = pygame.image.load('figure_1-yellow.png')
-
-
 clock = pygame.time.Clock()
 
-pygame.time.set_timer(pygame.USEREVENT, 10)
+pygame.time.set_timer(pygame.USEREVENT, 10000)
 counter = 4
 while Running:
     Screen.fill((100, 100, 100))
     for event in pygame.event.get():
-
         if event.type == pygame.KEYDOWN and event.key == pygame.K_r:
             board.col_selected = 4
             board.figure_rotation += 1
-            board.figure_rotation %= 4
+            board.figure_rotation = 1 if board.figure_rotation == 5 else board.figure_rotation
             board.current_figure_ss = board.get_spritesheet(board.current_figure)
+
         elif event.type == USEREVENT and Started == True:
             counter -= 1
 
@@ -131,10 +135,7 @@ while Running:
                 frame_number = 0
                 board.col_selected = 4
             else:
-                Started = False
-                Screen_Width = 400 * 3
-                Screen_Height = 200 * 3
-                Screen = pygame.display.set_mode((Screen_Width, Screen_Height), vsync=1)
+                Return_BtnFunc()
 
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:  # move the figure left
             board.col_selected -= 1 if board.col_selected != 0 else 0
@@ -229,16 +230,6 @@ while Running:
                     if number_number == 3:
                         break
 
-
-
-
-    #debug(pygame.mouse.get_pos(), Screen)
-    #debug(Btn_Start.sprite_rect.collidepoint(pygame.mouse.get_pos()), Screen, y=35)  # Вот здесь не работает, хотя написано правильно, Тру выводит только в узком прямоугольнике высотой на весь экран, в топлэфте главной кнопки
-    #debug(pygame.mouse.get_pressed(), Screen, y=60)
-    #debug(Started, Screen, y=85)
-    # debug(asd, Screen, y=110)
-    # debug(asd and Btn_Start.width > pygame.mouse.get_pos()[0] > Btn_Start.x and Btn_Start.height > pygame.mouse.get_pos()[1] > Btn_Start.y, Screen, y=90)
-
     pygame.display.flip()
 
-    clock.tick(60)  # Setting constant FPS
+    clock.tick(60)
